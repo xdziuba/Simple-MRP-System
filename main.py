@@ -187,7 +187,6 @@ with ui.column().classes('w-full items-center'):
                 Ilość: _4 szt._
                 Czas: _3 tyg._
                 `"]
-                       
                 E --> C;
                 D --> C;
                 C --> A;
