@@ -3,23 +3,30 @@ from nicegui import ui
 class ColorModeButton(ui.button):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
+        # Initialize button state as False
         self._state = False
+        # Attach click event handler
         self.on('click', self.toggle)
 
     def toggle(self) -> None:
+        # Toggles the state of the button
         self._state = not self._state
+        # Update the button appearance
         self.update()
 
     def update(self) -> None:
+        # Updates the button color and icon based on its state
         self.props(f"color={'grey' if self._state else 'black'} icon={'light_mode' if self._state else 'dark_mode'}")
+        # Enables or disables dark mode based on the button state
         if self._state:
             ui.dark_mode().disable()
         else:
             ui.dark_mode().enable()
+        # Call parent update method
         super().update()
 
 def calculate_mrp():
-    # Stools table
+    # Stools table calculations
     stools_netto_need = int(order_quantity.value) - int(stools_supply.value)
     if stools_netto_need <= 0:
         stools_netto_need = 0
@@ -35,7 +42,7 @@ def calculate_mrp():
     ]
     stools_table.update_rows(rows=stools_rows)
     
-    # Upholstery table
+    # Upholstery table calculations
     upholstery_netto_need = stools_netto_need * 0.5 - upholstery_supply.value
     if upholstery_netto_need <= 0:
         upholstery_netto_need = 0
@@ -51,7 +58,7 @@ def calculate_mrp():
     ]
     upholstery_table.update_rows(rows=upholstery_rows)
 
-    # Seats table
+    # Seats table calculations
     seats_netto_need = stools_netto_need - int(seats_supply.value)
     if seats_netto_need <= 0:
         seats_netto_need = 0
@@ -67,7 +74,7 @@ def calculate_mrp():
     ]
     seat_table.update_rows(rows=seats_rows)
     
-    # Legs table
+    # Legs table calculations
     legs_netto_need = seats_netto_need * 4 - int(legs_supply.value)
     if legs_netto_need <= 0:
         legs_netto_need = 0
@@ -83,7 +90,7 @@ def calculate_mrp():
     ]
     legs_table.update_rows(rows=legs_rows)
 
-    # Wood table
+    # Wood table calculations
     wood_netto_need = seats_netto_need - int(wood_supply.value)
     if wood_netto_need <= 0:
         wood_netto_need = 0
@@ -106,12 +113,14 @@ rows = [
             {'id_col': 'Zlecenie produkcji', '1_col': '-', '2_col': '-', '3_col': '-', '4_col': '-', '5_col': '-', '6_col': '-'},
 ]
 
+# Initialize rows for each table
 stools_rows = rows.copy()
 upholstery_rows = rows.copy()
 seats_rows = rows.copy()
 legs_rows = rows.copy()
 wood_rows = rows.copy()
 
+# Define column configuration for the tables
 columns = [
             {'name': 'id_col', 'label': ' ', 'field': 'id_col', 'required': True, 'align': 'center'},
             {'name': '1_col', 'label': '1', 'field': '1_col', 'required': True, 'align': 'center'},
@@ -122,8 +131,10 @@ columns = [
             {'name': '6_col', 'label': '6', 'field': '6_col', 'required': True, 'align': 'center'},
 ]
 
+# Create UI layout
 with ui.column().classes('w-full items-center'):
     with ui.row().classes('h-full justify-center'):
+        # Configuration card
         with ui.card().classes('items-center').style('height: 500px;'):
             ui.markdown('## ⚙️ Konfiguracja:')
             ui.separator()
@@ -140,6 +151,7 @@ with ui.column().classes('w-full items-center'):
                 order_quantity = ui.number(label='Wielkość zamówienia:', value=1, min=1, suffix='szt.', format='%.f')
                 ui.button('Oblicz', on_click=calculate_mrp)
 
+        # MRP Schedule card
         with ui.card().classes('items-center').style('height: 500px;'):
             ui.markdown('## 📆 Harmonogram MRP:')
             ui.separator()
@@ -162,6 +174,7 @@ with ui.column().classes('w-full items-center'):
                 with ui.tab_panel(five).classes('items-center'):
                     wood_table = ui.table(columns=columns, rows=wood_rows, row_key='id_col')
         
+        # Production Recipe card
         with ui.card().classes('items-center').style('height: 500px;'):
             ui.markdown('## 📋 Receptura produkcyjna:')
             ui.separator()
@@ -193,8 +206,12 @@ with ui.column().classes('w-full items-center'):
                 B --> A;
             ''')
 
+# Add color mode button to the page
 with ui.page_sticky(x_offset=18, y_offset=18):
     ColorModeButton()
 
+# Enable dark mode by default
 ui.dark_mode().enable()
+
+# Run the UI application
 ui.run(title='System MRP', favicon='📦')
