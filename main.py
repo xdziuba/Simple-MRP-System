@@ -1,5 +1,6 @@
 from nicegui import ui
 
+#Class that allows to change color of ui
 class ColorModeButton(ui.button):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
@@ -24,7 +25,7 @@ class ColorModeButton(ui.button):
             ui.dark_mode().enable()
         # Call parent update method
         super().update()
-
+# Function that calculates everything
 def calculate_mrp():
     # Stools table calculations
     stools_netto_need = int(order_quantity.value) - int(stools_supply.value)
@@ -206,12 +207,15 @@ with ui.column().classes('w-full items-center'):
                 B --> A;
             ''')
 
+
 # Add color mode button to the page
 with ui.page_sticky(x_offset=18, y_offset=18):
     ColorModeButton()
 
 # Enable dark mode by default
 ui.dark_mode().enable()
+
+
 
 # Run the UI application
 ui.run(title='System MRP', favicon='📦')
